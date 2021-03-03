@@ -1,0 +1,7 @@
+{
+  "name": "com.exceptionsoftware.exinjection",
+  "displayName": "Ex Injection",
+  "version": "1.0.0",
+  "description": "Sistemas para la injeccion de componentes",
+  "type": "library"
+}
