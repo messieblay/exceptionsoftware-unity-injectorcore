@@ -10,9 +10,14 @@ namespace ExceptionSoftware.Injector
         private static string logInjectionKey = "exinjectorLog";
         private static string logInjectionEditorKey = "exinjectorEditorLog";
 
+
+
+
         [SettingsProvider]
         public static SettingsProvider CreateMultiplayerBuildLocationSettingsProvider()
         {
+            InjectorSettingsAsset asset = ExInjertorUtils.Settings;
+
             var provider = new SettingsProvider(logInjectionPath, SettingsScope.Project)
             {
                 label = "Ex Injector",
@@ -29,6 +34,9 @@ namespace ExceptionSoftware.Injector
                             // if the path string was saved, lets store it off into editor prefrences, so we can easily 
                             // query for it in the build process.
                             EditorPrefs.SetBool(logInjectionKey, res);
+                            asset.logs = res;
+
+                            Unityx.SetDirty(asset);
                         }
                     }
 
@@ -41,6 +49,9 @@ namespace ExceptionSoftware.Injector
                             // if the path string was saved, lets store it off into editor prefrences, so we can easily 
                             // query for it in the build process.
                             EditorPrefs.SetBool(logInjectionEditorKey, res);
+                            asset.logsEditor = res;
+
+                            Unityx.SetDirty(asset);
                         }
                     }
 

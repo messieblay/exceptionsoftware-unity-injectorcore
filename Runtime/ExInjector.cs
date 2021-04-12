@@ -1,10 +1,13 @@
-﻿using System;
+﻿using ExceptionSoftware.Injector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 public static class ExInjector
 {
+
     static Dictionary<System.Type, object> _injectables = new Dictionary<System.Type, object>();
     static Dictionary<System.Type, List<ExInjectableVariable>> _injectsReceptors = new Dictionary<System.Type, List<ExInjectableVariable>>();
     static List<ExInjectableVariable> _injectsStaticReceptors = new List<ExInjectableVariable>();
@@ -206,17 +209,25 @@ public static class ExInjector
 
     #region DEBUG
 
-    static bool DEBUG = true;
     public static void Log(string s)
     {
-        //if (!DEBUG)
-        //    return;
+        if (!ExInjertorUtils.Settings.logs) return;
+
+#if EXLOGS
         Logx.Log(s, LogxEnum.InjectorCore);
-        //if (Shell.Instance.showExtraLogs) Debug.LogError(s);
+#else
+        Debug.Log(s);
+#endif
     }
     public static void LogTitle(string s)
     {
+        if (!ExInjertorUtils.Settings.logs) return;
+
+#if EXLOGS
         Logx.LogTitle(s, LogxEnum.InjectorCore);
+#else
+        Debug.Log(s);
+#endif
     }
     #endregion
 }

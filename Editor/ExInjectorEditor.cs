@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ExceptionSoftware.Injector
 {
-    public static class InjectorCoreEditor
+    public static class ExInjectorEditor
     {
         static Dictionary<System.Type, object> _injectables = new Dictionary<System.Type, object>();
         static Dictionary<System.Type, List<ExInjectableVariable>> _injectsReceptors = new Dictionary<System.Type, List<ExInjectableVariable>>();
@@ -34,11 +34,11 @@ namespace ExceptionSoftware.Injector
             ExInjector.onNewInjectable -= OnNewInjectableNoEditor;
             ExInjector.onNewInjectable += OnNewInjectableNoEditor;
 
-            ExInjector.LogTitle("InjectorCoreEDITOR STARTING!");
+            LogTitle("InjectorCoreEDITOR STARTING!");
             Initialize();
             ColletAllStaticInjectReceptor();
             InjectDependences();
-            ExInjector.LogTitle("InjectorCoreEDITOR STARTING DONE!");
+            LogTitle("InjectorCoreEDITOR STARTING DONE!");
             _initialized = true;
         }
 
@@ -46,6 +46,8 @@ namespace ExceptionSoftware.Injector
         {
             RegistrerInjectableObject(typex, obj);
         }
+
+
         #region Registrer Injectable Objects
 
         /// <summary>
@@ -67,7 +69,7 @@ namespace ExceptionSoftware.Injector
 
             if (typex.GetCustomAttributes(typeof(Injectablex), false).Length > 0)
             {
-                ExInjector.Log($"Registred: [{typex.Name}]");
+                Log($"Registred: [{typex.Name}]");
                 _injectables.Add(typex, obj);
 
                 InjectDependencesByNewInjectable(typex);
@@ -86,7 +88,7 @@ namespace ExceptionSoftware.Injector
         public static void RegistrerInjectableReceptorsInObject(object obj)
         {
             Type type = obj.GetType();
-            ExInjector.Log($"Registred: {type.Name}");
+            Log($"Registred: {type.Name}");
 
             foreach (ExInjectableVariable inject in ReflectClass(obj, obj.GetType()))
             {
@@ -113,7 +115,7 @@ namespace ExceptionSoftware.Injector
                     inj/*.Where(i => !i.injected).ToList()*/.ForEach(i =>
                     {
                         i.SetValue(injectableObject);
-                        ExInjector.Log($"Injected: {i.typeRequired.Name} -> [{ i.classOwner.Name}]");
+                        Log($"Injected: {i.typeRequired.Name} -> [{ i.classOwner.Name}]");
                     });
                 }
             }
@@ -129,7 +131,7 @@ namespace ExceptionSoftware.Injector
                     try
                     {
                         inj.SetValue(injectableObject);
-                        ExInjector.Log($"Injected: { inj.typeRequired.Name} -> [{inj.classOwner.Name}]");
+                        Log($"Injected: { inj.typeRequired.Name} -> [{inj.classOwner.Name}]");
                     }
                     catch (System.Exception ex) { Debug.LogException(ex); }
                 }
@@ -169,7 +171,7 @@ namespace ExceptionSoftware.Injector
             {
                 _injectsStaticReceptors.Add(inject);
                 GetInjectableReceptor(inject.typeRequired).Add(inject);
-                ExInjector.Log($"Static receptor collected: [{inject.classOwner.Name}] <- {inject.typeRequired.Name}");
+                Log($"Static receptor collected: [{inject.classOwner.Name}] <- {inject.typeRequired.Name}");
             }
         }
 
@@ -233,9 +235,25 @@ namespace ExceptionSoftware.Injector
 
         #region DEBUG
 
-        static bool DEBUG = true;
+        public static void Log(string s)
+        {
+            if (!ExInjertorUtils.Settings.logsEditor) return;
+#if EXLOGS
+            Logx.Log(s, LogxEnum.InjectorCoreEditor);
+#else
+        Debug.Log(s);
+#endif
+        }
+        public static void LogTitle(string s)
+        {
+            if (!ExInjertorUtils.Settings.logsEditor) return;
 
-
+#if EXLOGS
+            Logx.LogTitle(s, LogxEnum.InjectorCoreEditor);
+#else
+        Debug.Log(s);
+#endif
+        }
         #endregion
     }
 }

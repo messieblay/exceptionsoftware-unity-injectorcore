@@ -1,120 +1,147 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
-public abstract class ExInjectableVariable
+namespace ExceptionSoftware.Injector
 {
-    public object obj = null;
-    public Type typeRequired = null;
-    public Type classOwner = null;
-
-    public ExInjectableVariable(object obj, Type typeRequired, Type classOwner)
+    public abstract class ExInjectableVariable
     {
-        this.obj = obj;
-        this.typeRequired = typeRequired;
-        this.classOwner = classOwner;
-    }
+        public object obj = null;
+        public Type typeRequired = null;
+        public Type classOwner = null;
 
-    public virtual void SetValue(object obj)
-    {
-        //injected = true;
-        ExInjector.Log($"\tInjecting on: " + ToString());
-    }
-
-    public override string ToString() => $"{typeRequired.Name} -> {classOwner.Name}";
-}
-
-public class ExInjectableProperty : ExInjectableVariable
-{
-    public PropertyInfo variable = null;
-
-    public ExInjectableProperty(object obj, PropertyInfo variable, Type classOwner) : base(obj, variable.PropertyType, classOwner)
-    {
-        this.variable = variable;
-    }
-
-    public override void SetValue(object val)
-    {
-        variable.SetValue(obj, val, null);
-    }
-}
-
-public class ExInjectableField : ExInjectableVariable
-{
-    public FieldInfo variable = null;
-
-    public ExInjectableField(object obj, FieldInfo variable, Type classOwner) : base(obj, variable.FieldType, classOwner)
-    {
-        this.variable = variable;
-    }
-
-    public override void SetValue(object val)
-    {
-        variable.SetValue(obj, val);
-    }
-}
-
-public class ExInjertorUtils
-{
-    /// <summary>
-    /// Reflects the class and returns injects Receptors.
-    /// </summary>
-    /// <returns>The class.</returns>
-    /// <param name="obj">Object.</param>
-    /// <param name="types">Types.</param>
-    public static IEnumerable<ExInjectableVariable> ReflectClass(object obj, params Type[] types)
-    {
-        BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy;
-        if (obj == null)
+        public ExInjectableVariable(object obj, Type typeRequired, Type classOwner)
         {
-            flags |= BindingFlags.Static;
+            this.obj = obj;
+            this.typeRequired = typeRequired;
+            this.classOwner = classOwner;
         }
-        else
+
+        public virtual void SetValue(object obj)
         {
-            flags |= BindingFlags.Instance;
+            //injected = true;
+            ExInjector.Log($"\tInjecting on: " + ToString());
         }
-        string log = "";
-        for (int x = 0; x < types.Length; x++)
+
+        public override string ToString() => $"{typeRequired.Name} -> {classOwner.Name}";
+    }
+
+    public class ExInjectableProperty : ExInjectableVariable
+    {
+        public PropertyInfo variable = null;
+
+        public ExInjectableProperty(object obj, PropertyInfo variable, Type classOwner) : base(obj, variable.PropertyType, classOwner)
         {
-            log = "";
-            foreach (PropertyInfo p in types[x].GetProperties(flags))
+            this.variable = variable;
+        }
+
+        public override void SetValue(object val)
+        {
+            variable.SetValue(obj, val, null);
+        }
+    }
+
+    public class ExInjectableField : ExInjectableVariable
+    {
+        public FieldInfo variable = null;
+
+        public ExInjectableField(object obj, FieldInfo variable, Type classOwner) : base(obj, variable.FieldType, classOwner)
+        {
+            this.variable = variable;
+        }
+
+        public override void SetValue(object val)
+        {
+            variable.SetValue(obj, val);
+        }
+    }
+
+    public class ExInjertorUtils
+    {
+        public const string k_SettingsPath = "Assets/Exception Software/ExInjectorSettings.asset";
+        static InjectorSettingsAsset settings = null;
+        public static InjectorSettingsAsset Settings => GetOrCreateSettings();
+        internal static InjectorSettingsAsset GetOrCreateSettings()
+        {
+            if (settings == null)
             {
-                //int c0 = p.GetCustomAttributes(typeof(Injectx), true).Length;
-                //int c1 = p.GetCustomAttributes(typeof(Injectx), false).Length;
+                settings = ExAssets.FindAssetsByType<InjectorSettingsAsset>().FirstOrDefault();
+            }
+            if (settings == null)
+            {
+#if UNITY_EDITOR
+                settings = ScriptableObject.CreateInstance<InjectorSettingsAsset>();
+                Directory.CreateDirectory(k_SettingsPath);
+                UnityEditor.AssetDatabase.CreateAsset(settings, k_SettingsPath);
+                UnityEditor.AssetDatabase.SaveAssets();
+#endif
+            }
+            return settings;
+        }
 
-                if (p.GetCustomAttributes(typeof(Injectx), true).Length > 0)
+        /// <summary>
+        /// Reflects the class and returns injects Receptors.
+        /// </summary>
+        /// <returns>The class.</returns>
+        /// <param name="obj">Object.</param>
+        /// <param name="types">Types.</param>
+        public static IEnumerable<ExInjectableVariable> ReflectClass(object obj, params Type[] types)
+        {
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+            if (obj == null)
+            {
+                flags |= BindingFlags.Static;
+            }
+            else
+            {
+                flags |= BindingFlags.Instance;
+            }
+            string log = "";
+            for (int x = 0; x < types.Length; x++)
+            {
+                log = "";
+                foreach (PropertyInfo p in types[x].GetProperties(flags))
                 {
-                    if (!p.CanWrite)
-                        continue;
+                    //int c0 = p.GetCustomAttributes(typeof(Injectx), true).Length;
+                    //int c1 = p.GetCustomAttributes(typeof(Injectx), false).Length;
 
-                    if (obj == null && p.GetSetMethod() != null && !p.GetSetMethod().IsStatic)
-                        continue;
+                    if (p.GetCustomAttributes(typeof(Injectx), true).Length > 0)
+                    {
+                        if (!p.CanWrite)
+                            continue;
 
-                    yield return new ExInjectableProperty(obj, p, types[x]);
+                        if (obj == null && p.GetSetMethod() != null && !p.GetSetMethod().IsStatic)
+                            continue;
+
+                        yield return new ExInjectableProperty(obj, p, types[x]);
+                    }
+                }
+
+                foreach (FieldInfo p in types[x].GetFields(flags))
+                {
+                    //int c0 = p.GetCustomAttributes(typeof(Injectx), true).Length;
+                    //int c1 = p.GetCustomAttributes(typeof(Injectx), false).Length;
+
+                    if (p.GetCustomAttributes(typeof(Injectx), true).Length > 0)
+                    {
+                        if (obj == null && !p.IsStatic)
+                            continue;
+
+                        yield return new ExInjectableField(obj, p, types[x]);
+                    }
+                }
+
+                if (log != "")
+                {
+                    //              Log (types [x].Name + log);
                 }
             }
 
-            foreach (FieldInfo p in types[x].GetFields(flags))
-            {
-                //int c0 = p.GetCustomAttributes(typeof(Injectx), true).Length;
-                //int c1 = p.GetCustomAttributes(typeof(Injectx), false).Length;
 
-                if (p.GetCustomAttributes(typeof(Injectx), true).Length > 0)
-                {
-                    if (obj == null && !p.IsStatic)
-                        continue;
-
-                    yield return new ExInjectableField(obj, p, types[x]);
-                }
-            }
-
-            if (log != "")
-            {
-                //              Log (types [x].Name + log);
-            }
         }
 
-
     }
-
 }
