@@ -13,15 +13,15 @@ public class Monox : MonoBehaviour
 
     protected void RegistrerObject()
     {
-        InjectorCore.RegistrerInjectableObject(GetType(), this);
-        InjectorCore.RegistrerInjectableReceptorsInObject(this);
+        ExInjector.RegistrerInjectableObject(GetType(), this);
+        ExInjector.RegistrerInjectableReceptorsInObject(this);
     }
     protected virtual void DoAwake() { }
 
     protected virtual void OnDestroy()
     {
-        InjectorCore.RemoveInjectableObject(GetType());
-        InjectorCore.RemoveInjectableReceptorsInObject(this);
+        ExInjector.RemoveInjectableObject(GetType());
+        ExInjector.RemoveInjectableReceptorsInObject(this);
         DoDestroy();
     }
 

@@ -5,8 +5,8 @@ public class Objectx
     public Objectx()
     {
         //#if !UNITY_EDITOR
-        InjectorCore.RegistrerInjectableObject(GetType(), this);
-        InjectorCore.RegistrerInjectableReceptorsInObject(this);
+        ExInjector.RegistrerInjectableObject(GetType(), this);
+        ExInjector.RegistrerInjectableReceptorsInObject(this);
         //#endif
     }
 

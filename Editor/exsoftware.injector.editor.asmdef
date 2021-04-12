@@ -1,0 +1,17 @@
+{
+    "name": "exsoftware.injector.editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e98f51a5f9e9ac748931c6408eeea8f6",
+        "GUID:a54bd35cb553d1c4eb50ba12760d65b9"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

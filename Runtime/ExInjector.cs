@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-public static class InjectorCore
+public static class ExInjector
 {
     static Dictionary<System.Type, object> _injectables = new Dictionary<System.Type, object>();
-    static Dictionary<System.Type, List<InjectableVariable>> _injectsReceptors = new Dictionary<System.Type, List<InjectableVariable>>();
-    static List<InjectableVariable> _injectsStaticReceptors = new List<InjectableVariable>();
+    static Dictionary<System.Type, List<ExInjectableVariable>> _injectsReceptors = new Dictionary<System.Type, List<ExInjectableVariable>>();
+    static List<ExInjectableVariable> _injectsStaticReceptors = new List<ExInjectableVariable>();
 
-    static List<InjectableVariable> _auxList = null;
+    static List<ExInjectableVariable> _auxList = null;
 
     public static bool enableNormalLog = false;
     static bool _initialized = false;
@@ -31,11 +31,11 @@ public static class InjectorCore
     public static void StartService()
     {
         if (_initialized) return;
-        Logx.LogTitle("InjectorCore STARTING!", LogxEnum.InjectorCore);
+        LogTitle("InjectorCore STARTING!");
         Initialize();
         ColletAllStaticInjectReceptor();
         InjectDependences();
-        Logx.LogTitle("InjectorCore STARTING DONE!", LogxEnum.InjectorCore);
+        LogTitle("InjectorCore STARTING DONE!");
         _initialized = true;
     }
 
@@ -74,7 +74,7 @@ public static class InjectorCore
 
         if (typex.GetCustomAttributes(typeof(Injectablex), false).Length > 0)
         {
-            Log("Registred: {0}", typex.Name);
+            Log($"Registred: {typex.Name}");
             _injectables.Add(typex, obj);
 
             InjectDependencesByNewInjectable(typex);
@@ -83,7 +83,7 @@ public static class InjectorCore
     }
     public static void RemoveInjectableObject(System.Type typex)
     {
-        Log("Removing: {0}", typex.Name);
+        Log($"Removing: {typex.Name}");
         _injectables.Remove(typex);
     }
     #endregion
@@ -97,9 +97,9 @@ public static class InjectorCore
     public static void RegistrerInjectableReceptorsInObject(object obj)
     {
         Type type = obj.GetType();
-        Log("Registred: {0}", type.Name);
+        Log($"Registred: {type.Name}");
 
-        foreach (InjectableVariable inject in InjertorCoreUtils.ReflectClass(obj, obj.GetType()))
+        foreach (ExInjectableVariable inject in ExInjertorUtils.ReflectClass(obj, obj.GetType()))
         {
             GetInjectableReceptor(inject.typeRequired).Add(inject);
             InjectDependency(inject);
@@ -109,10 +109,10 @@ public static class InjectorCore
     public static void RemoveInjectableReceptorsInObject(object obj)
     {
         Type type = obj.GetType();
-        Log("Removing: [{0}]", type.Name);
+        Log($"Removing: [{ type.Name}]");
 
         List<Type> Keys = _injectsReceptors.Keys.ToList();
-        List<InjectableVariable> values;
+        List<ExInjectableVariable> values;
 
         foreach (Type key in Keys)
         {
@@ -134,7 +134,7 @@ public static class InjectorCore
     public static void InjectDependences()
     {
         object injectableObject = null;
-        foreach (List<InjectableVariable> inj in _injectsReceptors.Values)
+        foreach (List<ExInjectableVariable> inj in _injectsReceptors.Values)
         {
             if (inj.Count == 0)
                 continue;
@@ -144,7 +144,7 @@ public static class InjectorCore
                 inj/*.Where(i => !i.injected).ToList()*/.ForEach(i =>
                 {
                     i.SetValue(injectableObject);
-                    Log("Injected: {0} -> [{1}]", i.typeRequired.Name, i.classOwner.Name);
+                    Log($"Injected: {i.typeRequired.Name} -> [{ i.classOwner.Name}]");
                 });
             }
         }
@@ -156,10 +156,10 @@ public static class InjectorCore
         //      
         if (_injectables.TryGetValue(typex, out injectableObject))
         {
-            foreach (InjectableVariable inj in _injectsReceptors.Values.SelectMany(s => s.Where(s2 => s2.typeRequired.Equals(typex))/*.Where(s3 => !s3.injected)*/))
+            foreach (ExInjectableVariable inj in _injectsReceptors.Values.SelectMany(s => s.Where(s2 => s2.typeRequired.Equals(typex))/*.Where(s3 => !s3.injected)*/))
             {
                 inj.SetValue(injectableObject);
-                Log("Injected: {0} -> [{1}]", inj.typeRequired.Name, inj.classOwner.Name);
+                Log($"Injected: {inj.typeRequired.Name} -> [{ inj.classOwner.Name}]");
             }
         }
     }
@@ -168,11 +168,8 @@ public static class InjectorCore
     /// Injects the dependences on a single objects
     /// </summary>
     /// <param name="inj">Inj.</param>
-    static void InjectDependency(InjectableVariable inj)
+    static void InjectDependency(ExInjectableVariable inj)
     {
-        /*  if (inj.injected)
-              return;*/
-
         object injectableObject = null;
         if (_injectables.TryGetValue(inj.typeRequired, out injectableObject))
         {
@@ -180,12 +177,12 @@ public static class InjectorCore
         }
     }
 
-    static List<InjectableVariable> GetInjectableReceptor(System.Type typex)
+    static List<ExInjectableVariable> GetInjectableReceptor(System.Type typex)
     {
         _auxList = null;
         if (!_injectsReceptors.TryGetValue(typex, out _auxList))
         {
-            _auxList = new List<InjectableVariable>();
+            _auxList = new List<ExInjectableVariable>();
             _injectsReceptors.Add(typex, _auxList);
         }
         return _auxList;
@@ -196,11 +193,11 @@ public static class InjectorCore
     /// </summary>
     static void ColletAllStaticInjectReceptor()
     {
-        foreach (InjectableVariable inject in InjertorCoreUtils.ReflectClass(null, Assembly.GetExecutingAssembly().GetTypes()))
+        foreach (ExInjectableVariable inject in ExInjertorUtils.ReflectClass(null, Assembly.GetExecutingAssembly().GetTypes()))
         {
             _injectsStaticReceptors.Add(inject);
             GetInjectableReceptor(inject.typeRequired).Add(inject);
-            Log("Static receptor collected: [{0}] <- {1}", inject.classOwner.Name, inject.typeRequired.Name);
+            Log($"Static receptor collected: [{inject.classOwner.Name}] <- {inject.typeRequired.Name}");
         }
     }
 
@@ -210,7 +207,6 @@ public static class InjectorCore
     #region DEBUG
 
     static bool DEBUG = true;
-    public static void Log(string s, params string[] sparams) { Log(string.Format(s, sparams)); }
     public static void Log(string s)
     {
         //if (!DEBUG)
@@ -218,6 +214,9 @@ public static class InjectorCore
         Logx.Log(s, LogxEnum.InjectorCore);
         //if (Shell.Instance.showExtraLogs) Debug.LogError(s);
     }
-
+    public static void LogTitle(string s)
+    {
+        Logx.LogTitle(s, LogxEnum.InjectorCore);
+    }
     #endregion
 }
