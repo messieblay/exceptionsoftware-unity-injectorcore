@@ -61,7 +61,7 @@ namespace ExceptionSoftware.Injector
 
     public class ExInjertorUtils
     {
-        public const string k_SettingsPath = "Assets/Exception Software/ExInjectorSettings.asset";
+        public const string k_SettingsPath = "Assets/OGame/Injection/ExInjectorSettings.asset";
         static InjectorSettingsAsset settings = null;
         public static InjectorSettingsAsset Settings => GetOrCreateSettings();
         internal static InjectorSettingsAsset GetOrCreateSettings()
