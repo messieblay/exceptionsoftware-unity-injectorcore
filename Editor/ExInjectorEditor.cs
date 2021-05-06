@@ -237,7 +237,7 @@ namespace ExceptionSoftware.Injector
 
         public static void Log(string s)
         {
-            if (!ExInjertorUtils.Settings.logsEditor) return;
+            if (!ExInjertorUtility.Settings.logsEditor) return;
 #if EXLOGS
             Logx.Log(s, LogxEnum.InjectorCoreEditor);
 #else
@@ -246,7 +246,7 @@ namespace ExceptionSoftware.Injector
         }
         public static void LogTitle(string s)
         {
-            if (!ExInjertorUtils.Settings.logsEditor) return;
+            if (!ExInjertorUtility.Settings.logsEditor) return;
 
 #if EXLOGS
             Logx.LogTitle(s, LogxEnum.InjectorCoreEditor);

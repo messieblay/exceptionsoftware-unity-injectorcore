@@ -102,7 +102,7 @@ public static class ExInjector
         Type type = obj.GetType();
         Log($"Registred: {type.Name}");
 
-        foreach (ExInjectableVariable inject in ExInjertorUtils.ReflectClass(obj, obj.GetType()))
+        foreach (ExInjectableVariable inject in ExInjertorUtility.ReflectClass(obj, obj.GetType()))
         {
             GetInjectableReceptor(inject.typeRequired).Add(inject);
             InjectDependency(inject);
@@ -196,7 +196,7 @@ public static class ExInjector
     /// </summary>
     static void ColletAllStaticInjectReceptor()
     {
-        foreach (ExInjectableVariable inject in ExInjertorUtils.ReflectClass(null, Assembly.GetExecutingAssembly().GetTypes()))
+        foreach (ExInjectableVariable inject in ExInjertorUtility.ReflectClass(null, Assembly.GetExecutingAssembly().GetTypes()))
         {
             _injectsStaticReceptors.Add(inject);
             GetInjectableReceptor(inject.typeRequired).Add(inject);
@@ -211,7 +211,7 @@ public static class ExInjector
 
     public static void Log(string s)
     {
-        if (!ExInjertorUtils.Settings.logs) return;
+        if (!ExInjertorUtility.Settings.logs) return;
 
 #if EXLOGS
         Logx.Log(s, LogxEnum.InjectorCore);
@@ -221,7 +221,7 @@ public static class ExInjector
     }
     public static void LogTitle(string s)
     {
-        if (!ExInjertorUtils.Settings.logs) return;
+        if (!ExInjertorUtility.Settings.logs) return;
 
 #if EXLOGS
         Logx.LogTitle(s, LogxEnum.InjectorCore);

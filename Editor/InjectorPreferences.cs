@@ -16,7 +16,7 @@ namespace ExceptionSoftware.Injector
         [SettingsProvider]
         public static SettingsProvider CreateMultiplayerBuildLocationSettingsProvider()
         {
-            InjectorSettingsAsset asset = ExInjertorUtils.Settings;
+            InjectorSettingsAsset asset = ExInjertorUtility.Settings;
 
             var provider = new SettingsProvider(logInjectionPath, SettingsScope.Project)
             {
