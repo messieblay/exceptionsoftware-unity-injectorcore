@@ -9,7 +9,7 @@ namespace ExceptionSoftware.Injector
 
         public const string INJECTOR_PATH = ExConstants.GAME_PATH + "Injector/";
         public const string INJECTOR_PATH_RESOURCES = INJECTOR_PATH + "Resources/";
-        public const string INJECTOR_MENU_ITEM = "Game/Injector/";
+        public const string INJECTOR_MENU_ITEM = "Tools/Injector/";
 
         public const string INJECTOR_SETTINGS_FILENAME = "ExInjectorSettings";
 
@@ -36,7 +36,7 @@ namespace ExceptionSoftware.Injector
             return _settings;
         }
 
-        [MenuItem(INJECTOR_MENU_ITEM + "Select Asset")]
+        [MenuItem(INJECTOR_MENU_ITEM + "Select Asset", priority = 3000)]
         static void SelectAsset()
         {
             LoadAsset();
