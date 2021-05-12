@@ -3,5 +3,13 @@
   "displayName": "Ex Injection",
   "version": "1.0.0",
   "description": "Sistemas para la injeccion de componentes",
-  "type": "library"
+  "dependencies": {
+    "com.exceptionsoftware.exlibs": "1.0.0",
+    "com.exceptionsoftware.exlogs": "1.0.0"
+  },
+  "author": {
+    "name": "Exception Software",
+    "email": "marcoblay@gmail.com",
+    "url": "https://github.com/messieblay/exceptionsoftware-unity-injectorcore"
+  }
 }
