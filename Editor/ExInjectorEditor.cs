@@ -239,7 +239,7 @@ namespace ExceptionSoftware.Injector
         {
             if (!ExInjertorUtility.Settings.logsEditor) return;
 #if EXLOGS
-            Logx.Log(s, LogxEnum.InjectorCoreEditor);
+            Logx.Log("InjectorCoreEditor", s);
 #else
         Debug.Log(s);
 #endif
@@ -249,7 +249,7 @@ namespace ExceptionSoftware.Injector
             if (!ExInjertorUtility.Settings.logsEditor) return;
 
 #if EXLOGS
-            Logx.LogTitle(s, LogxEnum.InjectorCoreEditor);
+            Logx.Log("InjectorCoreEditor", s);
 #else
         Debug.Log(s);
 #endif

@@ -214,7 +214,7 @@ public static class ExInjector
         if (!ExInjertorUtility.Settings.logs) return;
 
 #if EXLOGS
-        Logx.Log(s, LogxEnum.InjectorCore);
+        Logx.Log("InjectorCore", s);
 #else
         Debug.Log(s);
 #endif
@@ -224,7 +224,7 @@ public static class ExInjector
         if (!ExInjertorUtility.Settings.logs) return;
 
 #if EXLOGS
-        Logx.LogTitle(s, LogxEnum.InjectorCore);
+        Logx.Log("InjectorCore", s);
 #else
         Debug.Log(s);
 #endif
