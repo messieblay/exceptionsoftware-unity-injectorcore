@@ -36,7 +36,7 @@ namespace ExceptionSoftware.Injector
             return _settings;
         }
 
-        [MenuItem(INJECTOR_MENU_ITEM + "Select Asset", priority = ExConstants.MENU_ITEM_PRIORITY)]
+        [MenuItem(INJECTOR_MENU_ITEM + "Settings", priority = ExConstants.MENU_ITEM_PRIORITY)]
         static void SelectAsset()
         {
             LoadAsset();
