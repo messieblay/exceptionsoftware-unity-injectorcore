@@ -7,7 +7,7 @@ namespace ExceptionSoftware.Injector
         static InjectorSettingsAsset _settings = null;
         public static InjectorSettingsAsset Settings => LoadAsset();
 
-        public const string INJECTOR_PATH = ExConstants.GAME_PATH + "Injector/";
+        public const string INJECTOR_PATH = ExConstants.SETTINGS_PATH + "Injector/";
         public const string INJECTOR_PATH_RESOURCES = INJECTOR_PATH + "Resources/";
         public const string INJECTOR_MENU_ITEM = "Tools/Injector/";
 
