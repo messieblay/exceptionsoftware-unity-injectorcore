@@ -1,4 +1,7 @@
-﻿using UnityEditor;
+﻿using System.Linq;
+using UnityEditor;
+using UnityEngine;
+
 namespace ExceptionSoftware.Injector
 {
     [InitializeOnLoad]
@@ -26,6 +29,11 @@ namespace ExceptionSoftware.Injector
             if (_settings == null)
             {
                 _settings = ExAssets.FindAssetsByType<InjectorSettingsAsset>().First();
+            }
+
+            if (_settings == null)
+            {
+                _settings = Resources.FindObjectsOfTypeAll<InjectorSettingsAsset>().FirstOrDefault();
             }
 
             if (_settings == null)
