@@ -38,7 +38,7 @@ namespace ExceptionSoftware.Injector
 
             if (_settings == null)
             {
-                _settings = ExAssets.CreateAsset<InjectorSettingsAsset>(INJECTOR_PATH_RESOURCES, INJECTOR_SETTINGS_FILENAME);
+                _settings = ExAssets.CreateAsset<InjectorSettingsAsset>(INJECTOR_PATH_RESOURCES, INJECTOR_SETTINGS_FILENAME, true, true);
             }
 
             return _settings;
