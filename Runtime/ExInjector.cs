@@ -25,6 +25,7 @@ public static class ExInjector
         StartService();
     }
 
+    [RuntimeInitializeOnLoadMethod]
     static void Initialize()
     {
         _injectsReceptors.Clear();
