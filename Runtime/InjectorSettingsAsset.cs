@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-
-namespace ExceptionSoftware.Injector
+﻿namespace ExceptionSoftware.Injector
 {
-    public class InjectorSettingsAsset : ScriptableObject
+    public class InjectorSettingsAsset : SettingsAsset
     {
         public bool logs = false;
         public bool logsEditor = false;
